@@ -42,7 +42,8 @@ pipeline {
                 script {
                     withCredentials([usernamePassword(credentialsId: DOCKER_CREDENTIALS_ID, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                         sh 'echo $PASSWORD | docker login --username $USERNAME --password-stdin'
-                        sh "docker push ${DOCKER_IMAGE}"
+                        sh "docker tag $DOCKER_IMAGE nicodemus0550/$DOCKER_IMAGE"
+                        sh "docker push nicodemus0550/$DOCKER_IMAGE"
                     }
                 }
             }
