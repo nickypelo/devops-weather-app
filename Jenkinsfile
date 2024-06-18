@@ -1,5 +1,5 @@
 pipeline {
-    agent: any
+    agent any
 
     environment {
         DOCKER_IMAGE = 'devops-weather-app'
@@ -8,14 +8,15 @@ pipeline {
     stages {
         stage('Clone web app repository') {
             steps {
-                git 'https://github.com/nickypelo/devops-weather-app'
+                git branch: 'main', url: 'https://github.com/nickypelo/devops-weather-app.git'
             }
         }
 
         stage('Build Docker Image') {
             steps {
                 script {
-                    dockerImage = docker.build(DOCKER_IMAGE)
+                    // Ensure Docker is available on the agent
+                    dockerImage = docker.build(env.DOCKER_IMAGE)
                 }
             }
         }
@@ -24,21 +25,18 @@ pipeline {
             steps {
                 script {
                     dockerImage.inside {
+                        // Ensure Node.js and Angular CLI are installed in the Docker image
                         sh 'npm install'
-                        sh 'ng build'
-                    }
-                }
-            }
-        }
-        stage('Serve Angular App') {
-            steps {
-                script {
-                    dockerImage.inside {
-                        sh 'ng serve --host 0.0.0.0'
+                        sh 'ng build --prod'
                     }
                 }
             }
         }
 
+        stage('Serve Angular App') {
+            steps {
+                // Typically, you would deploy the built Angular app to a web server here
+            }
+        }
     }
 }
