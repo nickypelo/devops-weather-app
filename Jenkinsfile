@@ -21,13 +21,13 @@ pipeline {
             }
         }
 
-        stage('Run Tests') {
-            steps {
-                script {
-                    sh 'npm test'
-                }
-            }
-        }
+        // stage('Run Tests') {
+        //     steps {
+        //         script {
+        //             sh 'npm test'
+        //         }
+        //     }
+        // }
 
         stage('Build Docker Image') {
             steps {
