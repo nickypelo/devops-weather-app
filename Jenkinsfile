@@ -33,11 +33,5 @@ pipeline {
                 }
             }
         }
-
-        stage('Serve Angular App') {
-            steps {
-                // Typically, you would deploy the built Angular app to a web server here
-            }
-        }
     }
 }
