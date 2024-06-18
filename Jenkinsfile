@@ -27,7 +27,8 @@ pipeline {
                     dockerImage.inside {
                         // Ensure Node.js and Angular CLI are installed in the Docker image
                         sh 'npm install'
-                        sh 'ng build --prod'
+                        sh 'ng build'
+                        echo 'completed build'
                     }
                 }
             }
