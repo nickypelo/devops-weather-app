@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = 'devops-weather-app'
+        DOCKER_CREDENTIALS_ID = 'dockerhub-credentials'
     }
 
     stages {
@@ -12,26 +13,51 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Install Dependencies') {
             steps {
                 script {
-                    // Ensure Docker is available on the agent
-                    dockerImage = docker.build(env.DOCKER_IMAGE)
+                    sh 'npm install'
                 }
             }
         }
 
-        stage('Build Angular App') {
+        stage('Run Tests') {
             steps {
                 script {
-                    dockerImage.inside {
-                        // Ensure Node.js and Angular CLI are installed in the Docker image
-                        sh 'npm install'
-                        sh 'ng build'
-                        echo 'completed build'
+                    sh 'npm test'
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    sh "docker build -t ${DOCKER_IMAGE} ."
+                }
+            }
+        }
+
+        stage('Deploy To DockerHub') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: DOCKER_CREDENTIALS_ID, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                        sh 'echo $PASSWORD | docker login --username $USERNAME --password-stdin'
+                        sh "docker push ${DOCKER_IMAGE}"
                     }
                 }
             }
+        }
+    }
+
+    post {
+        always {
+            cleanWs()
+        }
+        success {
+            echo 'Pipeline completed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed.'
         }
     }
 }

@@ -2,11 +2,13 @@
 FROM node:alpine
 # default application directory
 WORKDIR /usr/src/app
-# copy local app files to the defined application
-COPY . /usr/src/app
-# install the necessary angular CLI 
-RUN npm install -g @angular/cli
-# install the angular dependencies
+# copy package.json and package-lock.json separately to leverage Docker cache
+COPY package*.json ./
+# install the necessary dependencies
 RUN npm install
-# create and run application
+# copy the rest of the application code
+COPY . .
+# build the Angular application
+RUN npm run build
+# runs the Angular app
 CMD ["ng", "serve", "--host", "0.0.0.0"]
