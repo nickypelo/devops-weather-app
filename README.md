@@ -7,4 +7,5 @@ The purpose of the project is to display the use of
 - Docker containers 
 - RESTFul API 
 - Bootstrap CSS
+- Service Worker
 - Firebase Hosting 
