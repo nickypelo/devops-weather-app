@@ -9,8 +9,7 @@ import { filter, map, switchMap } from 'rxjs';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit{
-  title = 'devOps-weather-app';
-
+  
   constructor(private updates: SwUpdate, private snackbar: MatSnackBar) {}
 
   ngOnInit(): void {
